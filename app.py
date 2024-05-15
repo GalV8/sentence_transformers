@@ -13,23 +13,17 @@ def embed_text():
     try:
         # Get JSON data from request
         data = request.get_json()
-        department_sentences = data.get('sentences')
-        if not department_sentences:
+        sentences = data.get('sentences')
+        if not sentences:
             return jsonify({"error": "No sentences provided"}), 400
 
-        # Check if the input is a dictionary as expected
-        if not isinstance(department_sentences, dict):
-            return jsonify({"error": "Sentences must be provided as a dictionary with department codes as keys"}), 400
+        # Generate embeddings
+        embeddings = model.encode(sentences, show_progress_bar=False)
 
-        # Prepare for embedding
-        embedded_sentences = {}
-        for dept_code, sentence in department_sentences.items():
-            # Generate embeddings for each sentence, assuming each entry is a single string
-            embedding = model.encode(sentence, show_progress_bar=False)
-            # Convert embedding to list for JSON serialization
-            embedded_sentences[dept_code] = embedding.tolist()
+        # Convert embeddings to list for JSON serialization
+        embeddings_list = [embedding.tolist() for embedding in embeddings]
 
-        return jsonify({"embeddings": embedded_sentences})
+        return jsonify({"embeddings": embeddings_list})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
