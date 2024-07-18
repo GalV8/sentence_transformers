@@ -13,12 +13,12 @@ def embed_text():
 
         input_sentences = data['sentences']
 
-        if not isinstance(input_sentences, list):
-            return jsonify({"error": "Sentences must be provided as a list of dictionaries"}), 400
+        if not isinstance(input_sentences, dict):
+            return jsonify({"error": "Sentences must be provided as a dictionary with product IDs as keys"}), 400
 
         # Process each product's sentences
-        embedded_products = []
-        for product in input_sentences:
+        embedded_products = {}
+        for product_id, product in input_sentences.items():
             if not isinstance(product, dict):
                 return jsonify({"error": "Each product's sentences must be a dictionary"}), 400
 
@@ -28,7 +28,7 @@ def embed_text():
                 embedding = model.encode(sentence, show_progress_bar=False).tolist()
                 embedded_product[key] = embedding
 
-            embedded_products.append(embedded_product)
+            embedded_products[product_id] = embedded_product
 
         return jsonify(embedded_products)
     except Exception as e:
