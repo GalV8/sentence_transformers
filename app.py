@@ -13,18 +13,17 @@ def embed_text():
     try:
         # Get JSON data from request
         data = request.get_json()
-        all_department_sentences = data.get('sentences')
-        if not all_department_sentences:
+        department_sentences_dict = data.get('sentences')
+        if not department_sentences_dict:
             return jsonify({"error": "No sentences provided"}), 400
 
-        # Check if the input is a list of dictionaries as expected
-        if not isinstance(all_department_sentences, list):
-            return jsonify({"error": "Sentences must be provided as a list of dictionaries with department codes as keys"}), 400
+        # Check if the input is a dictionary as expected
+        if not isinstance(department_sentences_dict, dict):
+            return jsonify({"error": "Sentences must be provided as a dictionary with product IDs as keys"}), 400
 
+        # Prepare for embedding
         embedded_results = {}
-
-        # Iterate through each product's department sentences dictionary
-        for product_id, department_sentences in all_department_sentences.items():
+        for product_id, department_sentences in department_sentences_dict.items():
             if not isinstance(department_sentences, dict):
                 return jsonify({"error": "Each product's sentences must be a dictionary with department codes as keys"}), 400
 
