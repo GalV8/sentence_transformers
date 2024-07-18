@@ -13,8 +13,8 @@ def embed_text():
 
         input_sentences = data['sentences']
 
-        if not isinstance(input_sentences, dict):
-            return jsonify({"error": "Sentences must be provided as a dictionary with product IDs as keys"}), 400
+#         if not isinstance(input_sentences, dict):
+#             return jsonify({"error": "Sentences must be provided as a dictionary with product IDs as keys"}), 400
 
         # Process each product's sentences
         embedded_products = {}
