@@ -4,6 +4,25 @@ from sentence_transformers import SentenceTransformer
 app = Flask(__name__)
 model = SentenceTransformer('all-mpnet-base-v2')
 
+@app.route('/embed_single', methods=['POST'])
+def embed_single_text():
+    try:
+        data = request.get_json()
+        if not data or 'sentence' not in data:
+            return jsonify({"error": "No sentence provided"}), 400
+
+        input_sentence = data['sentence']
+
+        if not isinstance(input_sentence, str):
+            return jsonify({"error": "Sentence must be a string"}), 400
+
+        # Encode the sentence into embeddings and convert to list
+        embedding = model.encode(input_sentence, show_progress_bar=False).tolist()
+
+        return jsonify({"embedding": embedding})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/embed', methods=['POST'])
 def embed_text():
     try:
